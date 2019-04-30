@@ -1,3 +1,5 @@
+from random import randint
+
 class TicTacToe:
     def __init__(self):
         print("Legend:")
@@ -30,22 +32,26 @@ class TicTacToe:
                 print("Space already taken.")
 
     def __computerMove(self):
-        score = -362881
+        if self.__firstMove:
+            move = randint(0, 8)
+            self.__firstMove = False
+        else:
+            score = -362881
 
-        for i in range(9):
-            if self.__board[i] == ' ':
-                currBoard = self.__board[:]
-                currBoard[i] = self.player2
+            for i in range(9):
+                if self.__board[i] == ' ':
+                    currBoard = self.__board[:]
+                    currBoard[i] = self.player2
 
-                if self.isWin(currBoard, i):
-                    move = i
-                    break
+                    if self.isWin(currBoard, i):
+                        move = i
+                        break
 
-                tmp = self.__bestMove(currBoard, not self.__turn)
+                    tmp = self.__bestMove(currBoard, not self.__turn)
 
-                if tmp > score:
-                    score = tmp
-                    move = i
+                    if tmp > score:
+                        score = tmp
+                        move = i
 
         print("Computer's move: {0}".format(move + 1))
         self.__board[move] = self.player2
@@ -119,6 +125,7 @@ class TicTacToe:
 
         if players == 1:
             print("Computer: {0}\n".format(self.player2))
+            self.__firstMove = bool(self.__turn)
             
             if self.__turn == 0:
                 self.drawBoard()
