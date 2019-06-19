@@ -1,16 +1,17 @@
 from random import randint
 
+
 class TicTacToe:
     def __init__(self):
         print("Legend:")
         self.__board = [str(i) for i in range(1, 10)]
-        self.drawBoard()
+        self.draw_board()
     
-    def __playerMove(self):
+    def __player_move(self):
         while True:
             while True:
                 try:
-                    move = int(input("Player {0}\'s move: ".format(self.__turn + 1)))
+                    move = int(input(f"Player {self.__turn + 1}'s move: "))
                 except ValueError:
                     print("Input was not a number.")
                     continue
@@ -31,57 +32,57 @@ class TicTacToe:
             else:
                 print("Space already taken.")
 
-    def __computerMove(self):
-        if self.__firstMove:
+    def __computer_move(self):
+        if self.__computer_first_move:
             move = randint(0, 8)
-            self.__firstMove = False
+            self.__computer_first_move = False
         else:
             score = -362881
 
             for i in range(9):
                 if self.__board[i] == ' ':
-                    currBoard = self.__board[:]
-                    currBoard[i] = self.player2
+                    curr_board = self.__board[:]
+                    curr_board[i] = self.player2
 
-                    if self.isWin(currBoard, i):
+                    if self.is_win(curr_board, i):
                         move = i
                         break
 
-                    tmp = self.__bestMove(currBoard, not self.__turn)
+                    tmp = self.__best_move(curr_board, not self.__turn)
 
                     if tmp > score:
                         score = tmp
                         move = i
 
-        print("Computer's move: {0}".format(move + 1))
+        print(f"Computer's move: {move + 1}")
         self.__board[move] = self.player2
         return move
 
-    def __bestMove(self, board, turn):
+    def __best_move(self, board, turn):
         score = 0
 
         for i in range(9):
             if board[i] == ' ':
-                currBoard = board[:]
+                curr_board = board[:]
 
                 if turn == 0:
-                    currBoard[i] = self.player1
+                    curr_board[i] = self.player1
 
-                    if self.isWin(currBoard, i):
+                    if self.is_win(curr_board, i):
                         return -1
                 else:
-                    currBoard[i] = self.player2
+                    curr_board[i] = self.player2
 
-                    if self.isWin(currBoard, i):
+                    if self.is_win(curr_board, i):
                         return 1
 
-                score += self.__bestMove(currBoard, not turn)
+                score += self.__best_move(curr_board, not turn)
                     
         return score
 
-    def isWin(self, board, lastMove):
-        row = lastMove // 3
-        column = lastMove % 3
+    def is_win(self, board, last_move):
+        row = last_move // 3
+        column = last_move % 3
 
         return ((board[row * 3] == board[row * 3 + 1]
                 and board[row * 3] == board[row * 3 + 2])                                         # equal row
@@ -94,7 +95,7 @@ class TicTacToe:
                 and board[row * 3 + column] == board[(row + 2) % 3 * 3 + (column + 1) % 3]
                 and board[row * 3 + column] == board[(row + 1) % 3 * 3 + (column + 2) % 3]))      # equal anti-diagonal
 
-    def drawBoard(self):
+    def draw_board(self):
         for i in range(4, -1, -1):
             if i % 2 == 0:
                 print(self.__board[i//2*3] + '|' + self.__board[i//2*3 + 1] + '|' + self.__board[i//2*3 + 2])
@@ -121,24 +122,24 @@ class TicTacToe:
 
                 break
 
-        print("\nPlayer 1: {0}".format(self.player1))
+        print(f"\nPlayer 1: {self.player1}")
 
         if players == 1:
-            print("Computer: {0}\n".format(self.player2))
-            self.__firstMove = bool(self.__turn)
+            print(f"Computer: {self.player2}\n")
+            self.__computer_first_move = bool(self.__turn)
             
             if self.__turn == 0:
-                self.drawBoard()
+                self.draw_board()
 
             for _ in range(9):
                 if self.__turn == 0:
-                    move = self.__playerMove()
+                    move = self.__player_move()
                 else:
-                    move = self.__computerMove()
+                    move = self.__computer_move()
 
-                self.drawBoard()
+                self.draw_board()
                 
-                if self.isWin(self.__board, move):
+                if self.is_win(self.__board, move):
                     if self.__turn == 0:
                         print("Game over. You win!")
                     else:
@@ -148,20 +149,21 @@ class TicTacToe:
 
                 self.__turn = not self.__turn
         else:
-            print("Player 2: {0}\n".format(self.player2))
-            self.drawBoard()
+            print(f"Player 2: {self.player2}\n")
+            self.draw_board()
 
             for _ in range(9):
-                move = self.__playerMove()
-                self.drawBoard()
+                move = self.__player_move()
+                self.draw_board()
                 
-                if self.isWin(self.__board, move):
-                    print("Game over. Player {0} wins!".format(self.__turn + 1))
+                if self.is_win(self.__board, move):
+                    print(f"Game over. Player {self.__turn + 1} wins!")
                     return
 
                 self.__turn = not self.__turn
 
         print("Game over. It's a tie!")
+
 
 if __name__ == "__main__":
     print("Playing Tic-Tac-Toe")
