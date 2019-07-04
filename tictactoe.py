@@ -121,9 +121,9 @@ class TicTacToe:
                         move = i
                         break
 
-                    score = self._best_move(curr_board, not self._turn)
+                    score, min_loss_depth = self._best_move(curr_board, not self._turn, 1)
 
-                    if score >= max_score:
+                    if score > max_score and min_loss_depth != 1:
                         move = i
                         max_score = score
 
@@ -131,8 +131,9 @@ class TicTacToe:
         self._board[move] = self.player2
         return move
 
-    def _best_move(self, board, turn):
+    def _best_move(self, board, turn, depth):
         score = 0
+        min_loss_depth = 9
 
         for i in range(9):
             if board[i] == ' ':
@@ -142,16 +143,20 @@ class TicTacToe:
                     curr_board[i] = self.player1
 
                     if self._is_win(curr_board, i):
-                        return -1
+                        return -1, depth
                 else:
                     curr_board[i] = self.player2
 
                     if self._is_win(curr_board, i):
-                        return 1
+                        return 1, 9
 
-                score += self._best_move(curr_board, not turn)
+                tmp_score, loss_depth = self._best_move(curr_board, not turn, depth + 1)
+                score += tmp_score
 
-        return score
+                if loss_depth < min_loss_depth:
+                    min_loss_depth = loss_depth
+
+        return score, min_loss_depth
 
     @staticmethod  # can be used by _best_move()
     def _is_win(board, last_move):
